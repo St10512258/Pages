@@ -333,6 +333,30 @@
         .status-box.show { display: block; }
         .status-box p { margin-bottom: 0; font-size: 0.95rem; line-height: 1.6; }
         .status-box a { color: var(--purple-glow); }
+
+        .open-status { font-weight: 600; margin-top: 4px; }
+.open-status.open { color: #7be0a4; }
+.open-status.closed { color: var(--error); }
+
+.char-count { font-size: 0.8rem; color: var(--text-muted); margin: 6px 0 0; text-align: right; }
+.char-count.ok { color: #7be0a4; }
+
+#topBtn {
+    display: none;
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    width: 46px;
+    height: 46px;
+    border: none;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--purple-neon), #9932cc);
+    color: #fff;
+    font-size: 1.3rem;
+    cursor: pointer;
+    box-shadow: 0 0 15px rgba(186, 85, 211, 0.5);
+    z-index: 1000;
+}
     </style>
 </head>
 <body id="top">
@@ -378,11 +402,12 @@
                     <li>
                         <strong>Phone Number:</strong>
                         <span><a href="tel:0414537689">(041)-453-7689</a></span>
+                        <span id="openStatus" class="open-status"></span>
                     </li>
                     <li>
                         <strong>Operating Hours:</strong>
-                        <span>Monday to Sunday, 09:00 AM - 18:00 PM EST</span>
-                    </li>
+                        <span>Monday to Sunday, 09:00 AM - 18:00 PM EST</span>>
+                    </li>               
                 </ul>
             </div>
             
@@ -426,6 +451,7 @@
                     <div class="form-group">
                         <label for="userMessage">Your Message</label>
                         <textarea id="userMessage" name="userMessage" class="form-control" placeholder="Write your message here..."></textarea>
+                        <p class="char-count" id="charCount">0 characters (minimum 10)</p>
                         <p class="error-msg" id="messageError"></p>
                     </div>
 
@@ -445,6 +471,8 @@
     <footer>
         <p id="myparagraph">&copy; 2026 Polish &amp; Glow Nail Salon. All rights reserved.</p>
     </footer>
+
+    <button id="topBtn" aria-label="Back to top">↑</button>
 
     <script>
         // ---------- Mobile menu ----------
@@ -526,6 +554,54 @@
 
             window.location.href = mailto;
         });
+
+        // ---------- Open now / Closed badge (salon hours: 09:00 - 18:00, South African time) ----------
+const openStatus = document.getElementById("openStatus");
+const saHour = parseInt(new Date().toLocaleString("en-GB", {
+    hour: "numeric",
+    hourCycle: "h23",
+    timeZone: "Africa/Johannesburg"
+}), 10);
+
+if (saHour >= 9 && saHour < 18) {
+    openStatus.textContent = "We are open now";
+    openStatus.classList.add("open");
+} else {
+    openStatus.textContent = "We are closed right now";
+    openStatus.classList.add("closed");
+}
+
+// ---------- Live character counter for the message box ----------
+const userMessage = document.getElementById("userMessage");
+const charCount = document.getElementById("charCount");
+
+userMessage.addEventListener("input", function () {
+    const length = userMessage.value.trim().length;
+    if (length < 10) {
+        charCount.textContent = length + " characters (minimum 10)";
+        charCount.classList.remove("ok");
+    } else {
+        charCount.textContent = length + " characters";
+        charCount.classList.add("ok");
+    }
+});
+
+// ---------- Back-to-top button ----------
+const topBtn = document.getElementById("topBtn");
+window.addEventListener("scroll", function () {
+    topBtn.style.display = window.scrollY > 300 ? "block" : "none";
+});
+topBtn.addEventListener("click", function () {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+});
+
+// ---------- Close the mobile menu after a link is tapped ----------
+document.querySelectorAll(".nav-links a").forEach(function (link) {
+    link.addEventListener("click", function () {
+        navLinks.classList.remove("active");
+        hamburger.classList.remove("active");
+    });
+});
     </script>
 </body>
 </html>

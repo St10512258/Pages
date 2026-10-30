@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Our Services | Polish & Glow Nail Salon</title>
     <!-- Font Awesome Link for navigation/social icons -->
-    <link rel="stylesheet" href="https://cloudflare.com">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <style>
         :root {
@@ -249,6 +249,60 @@
             .hamburger.active span:nth-child(2) { opacity: 0; }
             .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(6px, -5px); }
         }
+
+        .service-search {
+    display: block;
+    width: 100%;
+    max-width: 420px;
+    margin: 25px auto 0;
+    padding: 14px 18px;
+    background-color: var(--bg-card);
+    border: 1px solid rgba(212, 112, 255, 0.25);
+    border-radius: 50px;
+    color: var(--text-light);
+    font-family: inherit;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.service-search:focus {
+    border-color: var(--purple-glow);
+    box-shadow: 0 0 10px rgba(212, 112, 255, 0.3);
+}
+
+.no-results {
+    display: none;
+    margin-top: 20px;
+    color: var(--purple-glow);
+}
+
+/* Second picture at the bottom of each card */
+.service-card > img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-top: 20px;
+    border: 1px solid rgba(212, 112, 255, 0.1);
+}
+
+#topBtn {
+    display: none;
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    width: 46px;
+    height: 46px;
+    border: none;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--purple-neon), #9932cc);
+    color: #fff;
+    font-size: 1.3rem;
+    cursor: pointer;
+    box-shadow: 0 0 15px rgba(186, 85, 211, 0.5);
+    z-index: 1000;
+}
     </style>
 </head>
 <body id="top">
@@ -258,10 +312,10 @@
         
         <nav class="nav-links">
             <a href="../index.html">HOME</a>
-            <a href="../Pages/about.html">About Us</a>
-            <a href="../Pages/services.html" class="active">Services</a>
-            <a href="../Pages/enquiry.html">Enquiry</a>
-            <a href="../Pages/contact.html">Contact Us</a>
+            <a href="./about.html" class="active">About Us</a>
+            <a href="./services.html">Services</a>
+            <a href="./enquiry.html">Enquiry</a>
+            <a href="./contact.html">Contact Us</a>
         </nav>
         
         <div class="hamburger">
@@ -275,6 +329,8 @@
         <section class="intro-section">
             <h1>Our Services</h1>
             <p>At Polish & Glow, we offer a variety of professional nail services to help you look and feel beautiful.</p>
+            <input type="text" id="serviceSearch" class="service-search" placeholder="Search services (e.g. gel, manicure)" aria-label="Search services">
+            <p id="noResults" class="no-results">No services match your search.</p>
         </section>
         
         <div class="services-grid">
@@ -310,3 +366,159 @@
             <div class="service-card">
                 <div class="service-info">
                     <!-- Picture Slot 3 -->
+                                         <div class="service-img-holder">
+                        <img src="../Assets/images/almond%20shaped%20acrylic.webp" alt="A set of acrylic nails">
+                    </div>
+                    <h2>Acrylic Nails</h2>
+                    <p>Strong, shaped acrylic extensions in the length and style you choose, finished with polish or nail art.</p>
+                </div>
+                <div class="price-tag">From R300</div>
+            </div>
+
+        </div> <!-- closes services-grid -->
+
+        <div class="back-to-top">
+            <a href="#top">Back to top</a>
+        </div>
+    </main>
+
+    <footer>
+        <p id="myparagraph">&copy; 2026 Polish &amp; Glow Nail Salon. All rights reserved.</p>
+    </footer>
+
+    <button id="topBtn" aria-label="Back to top">↑</button>
+
+    <script>
+        // Mobile menu
+        const hamburger = document.querySelector(".hamburger");
+        const navLinks = document.querySelector(".nav-links");
+        hamburger.addEventListener("click", function () {
+            hamburger.classList.toggle("active");
+            navLinks.classList.toggle("active");
+        });
+
+        // Close the mobile menu after a link is tapped
+        document.querySelectorAll(".nav-links a").forEach(function (link) {
+            link.addEventListener("click", function () {
+                navLinks.classList.remove("active");
+                hamburger.classList.remove("active");
+            });
+        });
+
+        // Search: show only the service cards that match what was typed
+        const searchBox = document.getElementById("serviceSearch");
+        const cards = document.querySelectorAll(".service-card");
+        const noResults = document.getElementById("noResults");
+
+        searchBox.addEventListener("input", function () {
+            const term = searchBox.value.trim().toLowerCase();
+            let visible = 0;
+
+            cards.forEach(function (card) {
+                const matches = card.textContent.toLowerCase().includes(term);
+                card.style.display = matches ? "" : "none";
+                if (matches) { visible++; }
+            });
+
+            noResults.style.display = visible === 0 ? "block" : "none";
+        });
+
+        // Back-to-top button
+        const topBtn = document.getElementById("topBtn");
+        window.addEventListener("scroll", function () {
+            topBtn.style.display = window.scrollY > 300 ? "block" : "none";
+        });
+        topBtn.addEventListener("click", function () {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+
+         // ---------- Enquiry form: validation and summary ----------
+    const form = document.querySelector("main form") || document.querySelector("form");
+
+    if (form) {
+        const fields = form.querySelectorAll(
+            "input:not([type=submit]):not([type=button]):not([type=hidden]):not([type=checkbox]):not([type=radio]), select, textarea"
+        );
+
+        // Summary box shown after a successful send
+        const summary = document.createElement("div");
+        summary.className = "enquiry-summary";
+        summary.setAttribute("role", "status");
+        form.insertAdjacentElement("afterend", summary);
+
+        function labelFor(field) {
+            const label = form.querySelector('label[for="' + field.id + '"]');
+            return label ? label.textContent.replace(":", "").trim() : (field.name || "This field");
+        }
+
+        function setError(field, message) {
+            let p = field.parentElement.querySelector(".field-error");
+            if (!p) {
+                p = document.createElement("p");
+                p.className = "field-error";
+                field.insertAdjacentElement("afterend", p);
+            }
+            p.textContent = message;
+            field.classList.toggle("invalid", message !== "");
+        }
+
+        function checkField(field) {
+            const value = field.value.trim();
+            const name = labelFor(field);
+
+            if (field.tagName === "SELECT" && value === "") {
+                setError(field, "Please choose " + name + ".");
+                return false;
+            }
+            if (value === "") {
+                setError(field, "Please fill in " + name + ".");
+                return false;
+            }
+            if (field.type === "email" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+                setError(field, "Enter a valid email address, like name@example.com.");
+                return false;
+            }
+            if (field.type === "tel" && !/^\+?[0-9 ()-]{10,15}$/.test(value)) {
+                setError(field, "Enter a phone number with 10 to 15 digits.");
+                return false;
+            }
+            setError(field, "");
+            return true;
+        }
+
+        // Clear a field's error as soon as the person fixes it
+        fields.forEach(function (field) {
+            field.addEventListener("input", function () { checkField(field); });
+            field.addEventListener("change", function () { checkField(field); });
+        });
+
+        form.addEventListener("submit", function (event) {
+            event.preventDefault();
+            summary.classList.remove("show");
+
+            let firstBad = null;
+            fields.forEach(function (field) {
+                if (!checkField(field) && !firstBad) { firstBad = field; }
+            });
+
+            if (firstBad) {
+                firstBad.focus();
+                return;
+            }
+
+            // Build the summary from what was entered
+            let html = "<h3>Thank you! Your enquiry details:</h3>";
+            fields.forEach(function (field) {
+                html += "<div><strong>" + labelFor(field) + ":</strong> " +
+                        field.value.trim().replace(/</g, "&lt;") + "</div>";
+            });
+            summary.innerHTML = html;
+            summary.classList.add("show");
+            summary.scrollIntoView({ behavior: "smooth", block: "center" });
+            form.reset();
+        });
+    }
+</script>
+    </script>
+</body>
+</html>
